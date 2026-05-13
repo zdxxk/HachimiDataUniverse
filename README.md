@@ -34,7 +34,9 @@ wlan0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 2312
 -  运行  `ethtool -i wlan0`  来确认驱动是否为:  `rtl88xxau_wfb`  or  `rtl8812eu`
 3.  **准备**
 - 运行如下指令，切换网卡的监听通道
-`sudo iw dev wlx04d9f5115fdd set channel 64`
+```bash
+sudo iw dev wlx04d9f5115fdd set channel 64
+```
 铭威图传的默认通道为 **64**
 - 替换`/etc/gs.key`
 将铭威fpv4win文件夹中的gs.key文件替换到`/etc`目录中
