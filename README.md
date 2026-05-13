@@ -41,21 +41,22 @@ sudo iw dev wlx04d9f5115fdd set channel 64
 - 替换`/etc/gs.key`
 将铭威fpv4win文件夹中的gs.key文件替换到`/etc`目录中
 
-4. **安装并运行  [install_gs.sh](https://raw.githubusercontent.com/svpcom/wfb-ng/refs/heads/master/scripts/install_gs.sh):**
+4. **安装并运行**
+- 安装[install_gs.sh](https://raw.githubusercontent.com/svpcom/wfb-ng/refs/heads/master/scripts/install_gs.sh):
 ```bash
 curl -o install_gs.sh https://raw.githubusercontent.com/svpcom/wfb-ng/refs/heads/master/scripts/install_gs.sh
 # 将 wlx04d9f5115fdd 替换成你自己的网卡名字
 sudo bash ./install_gs.sh wlx04d9f5115fdd
 ```
 
--   完成! 在地面站终端输入如下指令以监测链路
+-   完成! 在地面站终端输入如下指令以启动监测链路
 
 ```bash
 wfb-cli gs
 ```
 若`RX：gs video`数据跳动，表明接收到图传数据
 
-- 打开一个新的终端，运行如下指令，将接收到的数据包解码
+- 打开一个新的终端，运行如下指令，将接收到的数据包解码，将弹出视频窗口
 ```bash
 gst-launch-1.0 -v udpsrc port=5600 ! \
 "application/x-rtp, payload=96" ! \
