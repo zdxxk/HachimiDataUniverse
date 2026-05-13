@@ -62,3 +62,7 @@ avdec_h265 ! \
 videoconvert ! \
 autovideosink sync=false
 ```
+ **连不上？**
+ 1.  输入`sudo tcpdump -i wlx04d9f5115fdd -n`查看网卡是否接收到数据
+ 2. 查看`gs.key`是否被正确替换
+ 3. 检查通道是否为`64`
