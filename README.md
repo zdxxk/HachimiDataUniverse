@@ -24,11 +24,11 @@ cd rtl8812au/
  **不一定非得是 `wlan0`，也可以是`wlx04d9f5115fdd`等**
 ```bash
 wlan0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 2312
-        ether 0c:91:60:0a:5a:8b  txqueuelen 1000  (Ethernet)
-        RX packets 0  bytes 0 (0.0 B)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 0  bytes 0 (0.0 B)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+     ether 0c:91:60:0a:5a:8b  txqueuelen 1000  (Ethernet)
+     RX packets 0  bytes 0 (0.0 B)
+     RX errors 0  dropped 0  overruns 0  frame 0
+     TX packets 0  bytes 0 (0.0 B)
+     TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
 
 -  运行  `ethtool -i wlan0`  来确认驱动是否为:  `rtl88xxau_wfb`  or  `rtl8812eu`
@@ -87,4 +87,39 @@ sudo iw dev wlx04d9f5115fdd set channel 64
  ```bash
 #设置通道
 sudo iw dev wlx04d9f5115fdd set channel 64
+```
+
+#### 在代码中拉流
+数据已经在本地 udp://127.0.0.1:5600 了，直接在 Python 代码里用 OpenCV 调用 GStreamer 管道即可。
+```python
+#未经验证的AI代码
+import cv2
+
+# 这是专为 NVIDIA 显卡优化的管道（因为你有 ROG SCAR 18）
+# 它直接在显卡里完成：解包 -> 硬件解码 -> 转换为 RGB -> 传给 YOLO
+gst_str = (
+    "udpsrc port=5600 ! "
+    "application/x-rtp, payload=96 ! "
+    "rtph264depay ! "
+    "nvh264dec ! "  # 使用 NVIDIA 硬件解码
+    "videoconvert ! "
+    "appsink"
+)
+
+cap = cv2.VideoCapture(gst_str, cv2.CAP_GSTREAMER)
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    # 在这里运行你的 YOLO 模型
+    # results = model(frame)
+    
+    cv2.imshow('WFB-ng YOLO Stream', frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
 ```
