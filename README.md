@@ -67,5 +67,24 @@ autovideosink sync=false
 ```
  **连不上？**
  1.  输入`sudo tcpdump -i wlx04d9f5115fdd -n`查看网卡是否接收到数据
- 2. 查看`gs.key`是否被正确替换
+ 若终端没有数据跳动，则说明网卡没有接收到天空端信号。
+   - 输入`ethtool -i wlx04d9f5115fdd`检查驱动是否正确安装
+   - 输入`iwconfig`检查网卡是否为`Monitor`监听模式
+ 
+ 2. 查看`gs.key`是否被正确替换？
+ 替换完成后务必输入如下指令重启wfb-ng服务，并设置通道:
+ ```bash
+#停止服务
+sudo systemctl stop wifibroadcast@gs
+#确保没有任何残留进程
+sudo killall wfb_rx wfb_tx 2>/dev/null
+#重新启动
+sudo systemctl start wifibroadcast@gs
+#设置通道
+sudo iw dev wlx04d9f5115fdd set channel 64
+```
  3. 检查通道是否为`64`
+ ```bash
+#设置通道
+sudo iw dev wlx04d9f5115fdd set channel 64
+```
