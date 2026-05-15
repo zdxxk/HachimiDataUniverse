@@ -126,7 +126,7 @@ cv2.destroyAllWindows()
 ### 再启动：重启系统后如何恢复wfb-ng
 ```bash
 #新建一个bash脚本，将下面的内容粘贴到脚本中并执行
-  GNU nano 7.2                                         myscript.sh *                                                
+                                       
 #!/bin/bash
 set -e  # 只要有任何一条指令报错，脚本立即退出
 
