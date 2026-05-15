@@ -6,7 +6,7 @@
 - 天空端：淘宝购买的铭威2w天空端 **（2w不是功耗，是发射功率）**
 
 - 地面站：任意采用`RTL8812AU`方案的网卡
-### 在Ubuntu地面站上出图
+### 初始：在Ubuntu地面站上出图
 #### 采用[wfb-ng](https://github.com/svpcom/wfb-ng)方案
 1. **安装驱动**
 	
@@ -122,4 +122,51 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
+```
+### 再启动：重启系统后如何恢复wfb-ng
+```bash
+#新建一个bash脚本，将下面的内容粘贴到脚本中并执行
+  GNU nano 7.2                                         myscript.sh *                                                
+#!/bin/bash
+set -e  # 只要有任何一条指令报错，脚本立即退出
+
+echo "正在加载驱动"
+
+#加载先前安装的驱动
+sudo modprobe 88XXau
+
+#设置为监听模式
+sudo iw dev wlx04d9f5115fdd set type monitor
+
+
+echo "正在启动服务"
+
+#启动wfb-ng服务
+sudo systemctl start wifibroadcast@gs
+
+#修改通道为64
+sudo iw dev wlx04d9f5115fdd set channel 64
+
+echo "服务启动成功"
+
+echo "正在新终端中启动 Wifibroadcast 监测界面..."
+
+# 打开新终端运行 wfb-cli gs，并在结束后保持窗口打开
+gnome-terminal -- bash -c "wfb-cli gs; exec bash"
+
+echo "正在新终端中启动 GStreamer 视频流接收..."
+
+# 使用 gnome-terminal 打开新窗口
+# 使用 bash -c 运行 GStreamer 命令，并在最后加上 exec bash 以便在出错或退出时保留窗口查看日志
+gnome-terminal -- bash -c '
+gst-launch-1.0 -v udpsrc port=5600 ! \
+"application/x-rtp, payload=96" ! \
+rtph265depay ! \
+avdec_h265 ! \
+videoconvert ! \
+autovideosink sync=false;
+exec bash'
+
+echo "主脚本执行完毕，已在新终端中唤起 GStreamer。"
+
 ```
