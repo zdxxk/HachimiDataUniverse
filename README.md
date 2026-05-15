@@ -33,7 +33,7 @@ wlan0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 2312
 
 -  运行  `ethtool -i wlan0`  来确认驱动是否为:  `rtl88xxau_wfb`  or  `rtl8812eu`
 3.  **准备**
-- 运行如下指令，切换网卡的监听通道
+- 运行如下指令，将网卡的监听设置为通道为64
 ```bash
 sudo iw dev wlx04d9f5115fdd set channel 64
 ```
